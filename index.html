@@ -44,9 +44,18 @@
             }</span> ${node.data._directSubordinates}  </div>`;
           })
           .linkUpdate(function (d, i, arr) {
+            const tags = d.data.tags;
+            let link_color;
+            if (tags.includes('indépendant')){
+              link_color = "none"
+            }
+            else{
+              link_color = "#ffffff"
+            }
             d3.select(this)
               .attr('stroke', (d) =>
-                d.data._upToTheRootHighlighted ? '#ffffff' : '#ffffff'
+                
+                d.data._upToTheRootHighlighted ? `${link_color}` : `${link_color}`
               )
               .attr('stroke-width', (d) =>
                 d.data._upToTheRootHighlighted ? 15 : 1
@@ -57,7 +66,7 @@
             }
           })
           .nodeContent(function (d, i, arr, state) {
-            const tags = d.data.tags
+            const tags = d.data.tags;
             let logo_height, logo_width, logo_left, logo_top;
             if (tags.includes('long_logo')){
                 logo_height = '20px';
