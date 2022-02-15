@@ -90,7 +90,7 @@
                               </div>
                             </div>
                             </div>
-                            <div style="position: absolute; ${logo_size}; ${logo_pos}; background-size: 70px; background-repeat: no-repeat;">
+                            <div style="position: absolute; ${logo_size}; ${logo_pos}; background: url(${d.data.imageUrl});background-size: 70px; background-repeat: no-repeat;">
                             </div>
                           </div>
                           
@@ -120,7 +120,7 @@
           )
           .style(
             'background-image',
-            `url(${replaced}), radial-gradient(circle at center, #04192B 0, #000B0E 100%)`
+            `radial-gradient(circle at center, #04192B 0, #000B0E 100%)`
           );
       });
 
