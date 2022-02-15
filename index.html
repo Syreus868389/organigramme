@@ -112,13 +112,6 @@
                 'stroke-width',
                 d.data._highlighted || d.data._upToTheRootHighlighted ? 40 : 1
               );
-
-            const pieChartWrapperNode = d3
-              .select(this)
-              .select('.pie-chart-wrapper')
-              .node();
-            const val = (d.data.name.length * 5) % 100; // Dummy calc
-            // General pie chart invokation code
           })
           .render();
 
@@ -157,7 +150,6 @@
         });
       }
     </script>
-    <script src="./pieChart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
