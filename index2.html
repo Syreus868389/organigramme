@@ -1,0 +1,408 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+
+  <body>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-org-chart@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-flextree@2.1.2/build/d3-flextree.js"></script>
+
+    <div class="chart-container" style="height: 1200px"></div>
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script>
+      var chart;
+      d3.csv(
+        './directory/rf-org.csv'
+      ).then((dataFlattened) => {
+        dataFlattened.forEach((d) => {
+          const val = Math.round(d.name.length / 2);
+          d.progress = [...new Array(val)].map((d) => Math.random() * 25 + 5);
+        });
+        chart = new d3.OrgChart()
+          .container('.chart-container')
+          .svgHeight(window.innerHeight - 10)
+          .data(dataFlattened)
+          .nodeHeight((d) => 105)
+          .nodeWidth((d) => {
+            return 200;
+          })
+          .childrenMargin((d) => 50)
+          .compactMarginBetween((d) => 25)
+          .compactMarginPair((d) => 50)
+          .neightbourMargin((a, b) => 25)
+          .siblingsMargin((d) => 25)
+          .buttonContent(({ node, state }) => {
+            return `<div style="px;color:#716E7B;border-radius:5px;padding:4px;font-size:10px;margin:auto auto;background-color:white;border: 1px solid #E4E2E9"> <span style="font-size:9px">${
+              node.children
+                ? `<i class="fas fa-angle-up"></i>`
+                : `<i class="fas fa-angle-down"></i>`
+            }</span> ${node.data._directSubordinates}  </div>`;
+          })
+          .linkUpdate(function (d, i, arr) {
+            d3.select(this)
+              .attr('stroke', (d) =>
+                d.data._upToTheRootHighlighted ? '#14760D' : '#2CAAE5'
+              )
+              .attr('stroke-width', (d) =>
+                d.data._upToTheRootHighlighted ? 15 : 1
+              );
+
+            if (d.data._upToTheRootHighlighted) {
+              d3.select(this).raise();
+            }
+          })
+          .nodeContent(function (d, i, arr, state) {
+            return `
+                          <div style="font-family: 'Montserrat'; background-color:#fffff;sans-serif; position:absolute;margin-top:-1px;width:${
+                            d.width
+                          }px;height:${d.height}px;border-radius:0px;border: 2px solid #2CAAE5;text-align:center;">                           
+                            <div style="color:#2CAAE5;position:relative;top:-20px;">
+                              <div style="font-size:15px;color:#2CAAE5;margin-top:32px;"> ${
+                                d.data.name
+                              } </div>
+                              <div style="font-size:10px;"> ${
+                                d.data.positionName || ''
+                              } </div>
+                              </div>
+                            </div>
+                            </div>
+                            <div style="position: absolute; width: 70px; height: 31px; left: 122px; top: 81px; background: url(${d.data.imageUrl});background-size: 70px; background-repeat: no-repeat;">
+                            </div>
+                          </div>
+                          
+  `;
+          })
+          .nodeUpdate(function (d, i, arr) {
+            d3.select(this)
+              .select('.node-rect')
+              .attr('stroke', (d) =>
+                d.data._highlighted || d.data._upToTheRootHighlighted
+                  ? '#14760D'
+                  : 'none'
+              )
+              .attr(
+                'stroke-width',
+                d.data._highlighted || d.data._upToTheRootHighlighted ? 40 : 1
+              );
+          })
+          .render();
+
+        const back_img = './ecoutille2.png';
+        d3.select('.svg-chart-container')
+          .style(
+            'background',
+            'radial-gradient(circle at center, #000000 0, #2B00E7 100%) url("https://raw.githubusercontent.com/bumbeishvili/coronavirus.davidb.dev/master/glow.png")'
+          )
+          .style(
+            'background-image',
+            `url(${back_img}), radial-gradient(circle at center, #000000 0, #2N00E7 100%)`
+          );
+      });
+
+      function downloadPdf() {
+        chart.exportImg({
+          save: false,
+          onLoad: (base64) => {
+            var pdf = new jspdf.jsPDF();
+            var img = new Image();
+            img.src = base64;
+            img.onload = function () {
+              pdf.addImage(
+                img,
+                'JPEG',
+                5,
+                5,
+                595 / 3,
+                ((img.height / img.width) * 595) / 3
+              );
+              pdf.save('chart.pdf');
+            };
+          },
+        });
+      }
+    </script>
+    <script src="./pieChart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <style>
+      body {
+        background-color: #000c0e;
+      }
+    </style>
+
+    <script>
+      var index = 0;
+      var compact = 0;
+      var actNdCent = 0;
+    </script>
+
+    <style>
+      .btn {
+        margin: 3px;
+        color: inherit;
+        text-transform: uppercase;
+        word-wrap: break-word;
+        white-space: normal;
+        cursor: pointer;
+        border: 0;
+        border-radius: 0.125rem;
+        -webkit-box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%),
+          0 2px 10px 0 rgb(0 0 0 / 12%);
+        box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+        -webkit-transition: color 0.15s ease-in-out,
+          background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+          -webkit-box-shadow 0.15s ease-in-out;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+          border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+          -webkit-box-shadow 0.15s ease-in-out;
+        padding: 0.84rem 2.14rem;
+        font-size: 0.81rem;
+        display: inline-block;
+        font-weight: 400;
+        color: #212529;
+        text-align: center;
+        vertical-align: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        border: 1px solid transparent;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        border-radius: 0.25rem;
+      }
+
+      .btn-action-button {
+        text-transform: lowercase;
+        font-size: 11px !important;
+        border-radius: 7px !important;
+        color: white !important;
+        padding: 4px 5px !important;
+        background-color: #1d2643 !important;
+      }
+
+      .action-buttons {
+        position: absolute;
+        bottom: 10px;
+        right: 35px;
+      }
+
+      .svg-chart-container:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: radial-gradient(circle at center, #ffffff 0, #2B00E7 100%);
+      }
+    </style>
+
+    <div class="action-buttons">
+      <button
+        onclick='chart.setExpanded("O-6164").render()'
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-chevron-down"></i> Expand
+      </button>
+      <br />
+
+      <button
+        onclick='chart.setExpanded("O-6164",false).render()'
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-chevron-up"></i> Collapse</button
+      ><br />
+
+      <button
+        onclick='chart.addNode({imageUrl:"https:\/\/raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/cto.jpg",id:"root child",parentId:"O-6066",name:"test",progress:[25,20,15,10]})'
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-folder-plus"></i> Add Node
+      </button>
+      <br />
+
+      <button
+        onclick='chart.removeNode("O-6067")'
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-user-times"></i> remove</button
+      ><br />
+
+      <button
+        onclick="chart.fit()"
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-sync"></i> fit
+      </button>
+      <br />
+
+      <button
+        onclick='chart.layout(["right","bottom","left","top"][index++%4]).render().fit()'
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-retweet"></i> swap
+      </button>
+      <br />
+
+      <button
+        onclick="chart.compact(!!(compact++%2)).render().fit()"
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-sitemap"></i> compact
+      </button>
+      <br />
+
+      <button
+        onclick="chart.setActiveNodeCentered(!!(actNdCent++%2)).render()"
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-border-none"></i> center Active
+      </button>
+      <br />
+
+      <button
+        onclick='chart.setCentered("O-6162").render()'
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-compress-arrows-alt"></i> center
+      </button>
+      <br />
+      <button
+        onclick='chart.setHighlighted("O-6162").render()'
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-highlighter"></i> mark</button
+      ><br />
+      <button
+        onclick='chart.setUpToTheRootHighlighted("O-6162").render().fit()'
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-route"></i> mark root
+      </button>
+      <br />
+      <button
+        onclick="chart.clearHighlighting()"
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-eraser"></i> clear mark
+      </button>
+      <br />
+      <button
+        onclick="chart.fullscreen('body')"
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-expand"></i> fullscreen</button
+      ><br />
+
+      <button
+        onclick="chart.exportImg()"
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="far fa-images"></i> export img
+      </button>
+      <br />
+
+      <button
+        onclick="chart.exportImg({full:true})"
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="far fa-images"></i> export full img
+      </button>
+      <br />
+
+      <button
+        onclick="chart.exportSvg()"
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-file-download"></i> export svg
+      </button>
+      <br />
+      <button
+        onclick="chart.expandAll()"
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-angle-double-down"></i> expand all</button
+      ><br />
+
+      <button
+        onclick="chart.collapseAll()"
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-angle-double-up"></i> collapse all</button
+      ><br />
+
+      <button
+        onclick="downloadPdf()"
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="far fa-file-pdf"></i> export pdf
+      </button>
+      <br />
+
+      <button
+        onclick='chart.connections([{from:"O-6069",to:"O-6070",label:"Conflicts of interest"}]).render()'
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-project-diagram"></i> add link
+      </button>
+      <br />
+
+      <button
+        onclick="chart.zoomOut()"
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-minus"></i> zoom out</button
+      ><br />
+      <button
+        onclick="chart.zoomIn()"
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-plus"></i> zoom in
+      </button>
+      <br />
+    </div>
+
+    <a
+      target="_blank"
+      href="https://github.com/bumbeishvili/d3-organization-chart"
+    >
+      <img
+        style="position: fixed; top: 0; right: 0; border: 0; z-index: 2"
+        width="149"
+        height="149"
+        src="https://bumbeishvili.github.io/d3-tooltip/forkme.png"
+        alt="Fork me on GitHub"
+      />
+    </a>
+
+    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+    <script>
+      kofiWidgetOverlay.draw('bumbeishvili', {
+        type: 'floating-chat',
+        'floating-chat.donateButton.text': 'Tip Us',
+        'floating-chat.donateButton.background-color': '#00b9fe',
+        'floating-chat.donateButton.text-color': '#fff',
+      });
+    </script>
+  </body>
+</html>
