@@ -19,10 +19,6 @@
       d3.csv(
         './directory/rf-org.csv'
       ).then((dataFlattened) => {
-        dataFlattened.forEach((d) => {
-          const val = Math.round(d.name.length / 2);
-          d.progress = [...new Array(val)].map((d) => Math.random() * 25 + 5);
-        });
         chart = new d3.OrgChart()
           .container('.chart-container')
           .svgHeight(window.innerHeight - 10)
@@ -44,9 +40,8 @@
             }</span> ${node.data._directSubordinates}  </div>`;
           })
           .linkUpdate(function (d, i, arr) {
-            const tags = d.data.tags;
             let link_color;
-            if (tags.includes('indépendant')){
+            if (d.data.tags.includes('indépendant')){
               link_color = "none"
             }
             else{
@@ -66,22 +61,23 @@
             }
           })
           .nodeContent(function (d, i, arr, state) {
-            const tags = d.data.tags;
-            let logo_height, logo_width, logo_left, logo_top;
-            if (tags.includes('long_logo')){
-                logo_height = '20px';
-                logo_width = '70px';
-                logo_left = '159px'
-                logo_top = '67px';
+            let logo_size;
+            let logo_pos;
+            let margins = 'margin-top: -1px';
+            if (d.data.tags.includes('long_logo')){
+                logo_size = 'width: 70px; height: 20px';
+                logo_pos = 'left: 159px; top: 67px';
             }
-            else{
-                logo_height = '23px';
-                logo_width = '23px';
-                logo_left = '209px';
-                logo_top = '59px';
+            else {
+              logo_size = 'width: 23px; height: 23px';
+              logo_pos = 'left: 209px; top: 59px';
+            }
+            if(d.data.tags.includes('indépendant')){
+                margins = 'margin-top: -1px; margin-left: -30px; margin-right: -30px';
+                logo_pos = 'left: 109px; top: 67px';
             }
             return `
-                          <div style="font-family: 'Montserrat'; background-color:#ffffff;sans-serif; position:absolute;margin-top:-1px;width:${
+                          <div style="font-family: 'Montserrat'; background-color:#ffffff;sans-serif; position:absolute;${margins};width:${
                             d.width
                           }px;height:${d.height}px;border-radius:0px;border: 3px solid #2C02E7;text-align:center; overflow:auto;">                           
                             <div style="color:#000000;position:relative;top:-20px;">
@@ -94,7 +90,7 @@
                               </div>
                             </div>
                             </div>
-                            <div style="position: absolute; width: ${logo_width}; height: ${logo_height}; left: ${logo_left}; top: ${logo_top}; background: url(${d.data.imageUrl});background-size: 70px; background-repeat: no-repeat;">
+                            <div style="position: absolute; ${logo_size}; ${logo_pos}; background: url(${d.data.imageUrl});background-size: 70px; background-repeat: no-repeat;">
                             </div>
                           </div>
                           
