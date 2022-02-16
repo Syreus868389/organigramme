@@ -173,7 +173,6 @@
       .btn {
         margin: 3px;
         color: inherit;
-        text-transform: uppercase;
         word-wrap: break-word;
         white-space: normal;
         cursor: pointer;
@@ -211,7 +210,6 @@
       }
 
       .btn-action-button {
-        text-transform: lowercase;
         font-size: 11px !important;
         border-radius: 7px !important;
         color: white !important;
@@ -221,7 +219,7 @@
 
       .action-buttons {
         position: absolute;
-        bottom: 10px;
+        bottom: 220px;
         right: 35px;
       }
 
@@ -241,7 +239,7 @@
         onclick="chart.fit()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-sync"></i> fit
+        <i class="fas fa-sync"></i> Adapter à la fenêtre
       </button>
       <br />
 
@@ -249,7 +247,7 @@
         onclick='chart.layout(["right","bottom","left","top"][index++%4]).render().fit()'
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-retweet"></i> swap
+        <i class="fas fa-retweet"></i> Changer d'orientation
       </button>
       <br />
 
@@ -257,7 +255,7 @@
         onclick="chart.compact(!!(compact++%2)).render().fit()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-sitemap"></i> compact
+        <i class="fas fa-sitemap"></i> Format compact
       </button>
       <br />
 
@@ -265,21 +263,21 @@
         onclick='chart.setCentered("O-0").render()'
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-compress-arrows-alt"></i> center
+        <i class="fas fa-compress-arrows-alt"></i> Centrer
       </button>
       <br />
       <button
         onclick="chart.fullscreen('body')"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-expand"></i> fullscreen</button
+        <i class="fas fa-expand"></i> Plein écran</button
       ><br />
 
       <button
         onclick="chart.exportImg()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="far fa-images"></i> export img
+        <i class="far fa-images"></i> Exporter l'image actuelle
       </button>
       <br />
 
@@ -287,36 +285,29 @@
         onclick="chart.exportImg({full:true})"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="far fa-images"></i> export full img
+        <i class="far fa-images"></i> Exporter l'image complète
       </button>
       <br />
 
       <button
-        onclick="chart.exportSvg()"
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-file-download"></i> export svg
-      </button>
-      <br />
-      <button
         onclick="chart.expandAll()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-angle-double-down"></i> expand all</button
+        <i class="fas fa-angle-double-down"></i> Tout déplier</button
       ><br />
 
       <button
         onclick="chart.collapseAll()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-angle-double-up"></i> collapse all</button
+        <i class="fas fa-angle-double-up"></i> Tout replier</button
       ><br />
 
       <button
         onclick="downloadPdf()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="far fa-file-pdf"></i> export pdf
+        <i class="far fa-file-pdf"></i> Exporter en PDF
       </button>
       <br />
 
@@ -324,7 +315,7 @@
         onclick='chart.connections([{from:"O-0",to:"O-1",label:"Conflicts of interest"}]).render()'
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-project-diagram"></i> add link
+        <i class="fas fa-project-diagram"></i> Montrer les connexions
       </button>
       <br />
 
@@ -332,7 +323,7 @@
         onclick='chart.connections([{}]).render()'
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-project-diagram"></i> hide links
+        <i class="fas fa-project-diagram"></i> Cacher les connexions
       </button>
       <br />
 
@@ -340,15 +331,15 @@
         onclick="chart.zoomOut()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-minus"></i> zoom out</button
+        <i class="fas fa-minus"></i> Dézoomer</button
       ><br />
       <button
         onclick="chart.zoomIn()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-plus"></i> zoom in
+        <i class="fas fa-plus"></i> Zoomer
       </button>
-      <br />
+      <br/>
     </div>
   </body>
 </html>
