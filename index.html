@@ -238,36 +238,6 @@
 
     <div class="action-buttons">
       <button
-        onclick='chart.setExpanded("O-6164").render()'
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-chevron-down"></i> Expand
-      </button>
-      <br />
-
-      <button
-        onclick='chart.setExpanded("O-6164",false).render()'
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-chevron-up"></i> Collapse</button
-      ><br />
-
-      <button
-        onclick='chart.addNode({imageUrl:"https:\/\/raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/cto.jpg",id:"root child",parentId:"O-6066",name:"test",progress:[25,20,15,10]})'
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-folder-plus"></i> Add Node
-      </button>
-      <br />
-
-      <button
-        onclick='chart.removeNode("O-6067")'
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-user-times"></i> remove</button
-      ><br />
-
-      <button
         onclick="chart.fit()"
         class="btn btn-action-button waves-effect waves-light"
       >
@@ -292,38 +262,10 @@
       <br />
 
       <button
-        onclick="chart.setActiveNodeCentered(!!(actNdCent++%2)).render()"
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-border-none"></i> center Active
-      </button>
-      <br />
-
-      <button
-        onclick='chart.setCentered("O-6162").render()'
+        onclick='chart.setCentered("O-0").render()'
         class="btn btn-action-button waves-effect waves-light"
       >
         <i class="fas fa-compress-arrows-alt"></i> center
-      </button>
-      <br />
-      <button
-        onclick='chart.setHighlighted("O-6162").render()'
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-highlighter"></i> mark</button
-      ><br />
-      <button
-        onclick='chart.setUpToTheRootHighlighted("O-6162").render().fit()'
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-route"></i> mark root
-      </button>
-      <br />
-      <button
-        onclick="chart.clearHighlighting()"
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-eraser"></i> clear mark
       </button>
       <br />
       <button
@@ -379,10 +321,18 @@
       <br />
 
       <button
-        onclick='chart.connections([{from:"O-6069",to:"O-6070",label:"Conflicts of interest"}]).render()'
+        onclick='chart.connections([{from:"O-0",to:"O-1",label:"Conflicts of interest"}]).render()'
         class="btn btn-action-button waves-effect waves-light"
       >
         <i class="fas fa-project-diagram"></i> add link
+      </button>
+      <br />
+
+      <button
+        onclick='chart.connections([{}]).render()'
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-project-diagram"></i> hide links
       </button>
       <br />
 
@@ -400,28 +350,5 @@
       </button>
       <br />
     </div>
-
-    <a
-      target="_blank"
-      href="https://github.com/bumbeishvili/d3-organization-chart"
-    >
-      <img
-        style="position: fixed; top: 0; right: 0; border: 0; z-index: 2"
-        width="149"
-        height="149"
-        src="https://bumbeishvili.github.io/d3-tooltip/forkme.png"
-        alt="Fork me on GitHub"
-      />
-    </a>
-
-    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
-    <script>
-      kofiWidgetOverlay.draw('bumbeishvili', {
-        type: 'floating-chat',
-        'floating-chat.donateButton.text': 'Tip Us',
-        'floating-chat.donateButton.background-color': '#00b9fe',
-        'floating-chat.donateButton.text-color': '#fff',
-      });
-    </script>
   </body>
 </html>
