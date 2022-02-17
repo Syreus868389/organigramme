@@ -8,45 +8,57 @@
     <script src="https://cdn.jsdelivr.net/npm/d3-org-chart@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-flextree@2.1.2/build/d3-flextree.js"></script>
 
-    <div class="chart-container" style="height: 1200px"></div>
+    <div class="chart-container" style="height: 100%"></div>
 
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
       rel="stylesheet"
     />
+
     <script>
       var chart;
       d3.csv(
-        './directory/rf-org.csv'
+        '../static/rf-org.csv'
       ).then((dataFlattened) => {
-        dataFlattened.forEach((d) => {
-          const val = Math.round(d.name.length / 2);
-          d.progress = [...new Array(val)].map((d) => Math.random() * 25 + 5);
-        });
         chart = new d3.OrgChart()
           .container('.chart-container')
           .svgHeight(window.innerHeight - 10)
           .data(dataFlattened)
-          .nodeHeight((d) => 105)
-          .nodeWidth((d) => {
-            return 200;
+          .nodeHeight((d) => {if (d.data.tags.includes('divider')){
+            return 60;
+          }
+          
+          else{
+            return 90;
+            }
           })
-          .childrenMargin((d) => 50)
-          .compactMarginBetween((d) => 25)
-          .compactMarginPair((d) => 50)
-          .neightbourMargin((a, b) => 25)
-          .siblingsMargin((d) => 25)
+          .nodeWidth((d) => {
+            return 240;
+          })
+          .childrenMargin((d) => 90)
+          .compactMarginBetween((d) => 65)
+          .compactMarginPair((d) => 100)
+          .neightbourMargin((a, b) => 50)
+          .siblingsMargin((d) => 100)
           .buttonContent(({ node, state }) => {
-            return `<div style="px;color:#716E7B;border-radius:5px;padding:4px;font-size:10px;margin:auto auto;background-color:white;border: 1px solid #E4E2E9"> <span style="font-size:9px">${
+            return `<div style="color:#ffffff;border-radius:5px;padding:3px;font-size:10px;margin:auto auto;background-color: #14045c;border: 1px solid #2CAAE5"> <span style="font-size:9px">${
               node.children
                 ? `<i class="fas fa-angle-up"></i>`
                 : `<i class="fas fa-angle-down"></i>`
             }</span> ${node.data._directSubordinates}  </div>`;
           })
           .linkUpdate(function (d, i, arr) {
+            let link_color;
+            if (d.data.tags.includes('indépendant')){
+              link_color = "none"
+            }
+            else {
+              link_color = "#ffffff"
+            }
             d3.select(this)
               .attr('stroke', (d) =>
-                d.data._upToTheRootHighlighted ? '#14760D' : '#2CAAE5'
+                
+                d.data._upToTheRootHighlighted ? `${link_color}` : `${link_color}`
               )
               .attr('stroke-width', (d) =>
                 d.data._upToTheRootHighlighted ? 15 : 1
@@ -57,25 +69,66 @@
             }
           })
           .nodeContent(function (d, i, arr, state) {
-            return `
-                          <div style="font-family: 'Montserrat'; background-color:#fffff;sans-serif; position:absolute;margin-top:-1px;width:${
+            let logo_size;
+            let logo_pos;
+            let margins = 'margin-top: -1px';
+            if (d.data.tags.includes('long_logo')){
+                logo_size = 'width: 70px; height: 20px';
+                logo_pos = 'left: 161px; top: 67px';
+            }
+            
+            else if (d.data.tags.includes('mouv')){
+                logo_size = 'width: 70px; height: 20px';
+                logo_pos = 'left: 189px; top: 62px';
+            }
+            
+            else {
+              logo_size = 'width: 23px; height: 23px';
+              logo_pos = 'left: 209px; top: 59px';
+            }
+            if(d.data.tags.includes('indépendant')){
+                margins = 'margin-top: -1px; margin-left: -30px; margin-right: -30px';
+                logo_pos = 'left: 129px; top: 67px';
+            }
+            if (d.data.tags.includes('divider')){
+              return `
+                          <div style="font-family: 'Montserrat'; sans-serif; position:absolute;${margins};width:${
                             d.width
-                          }px;height:${d.height}px;border-radius:0px;border: 2px solid #2CAAE5;text-align:center;">                           
-                            <div style="color:#2CAAE5;position:relative;top:-20px;">
-                              <div style="font-size:15px;color:#2CAAE5;margin-top:32px;"> ${
+                          }px;height:${d.height}px;border-radius:0px;border: 3px solid #ffffff;text-align:center; overflow:auto;">                           
+                            <div style="position:relative;">
+                              <div style="font-size:17px;color:#ffffff;margin-top:17px;"> ${
                                 d.data.name
                               } </div>
-                              <div style="font-size:10px;"> ${
+                              </div>
+                            </div>
+                            </div>
+                            <div style="position: absolute; ${logo_size}; ${logo_pos}; background: url(${d.data.imageUrl});background-size: contain; background-repeat: no-repeat;">
+                            </div>
+                          </div>
+                          
+                    `
+            }
+            else{
+            return `
+                          <div style="font-family: 'Montserrat'; background-color:#ffffff;sans-serif; position:absolute;${margins};width:${
+                            d.width
+                          }px;height:${d.height}px;border-radius:0px;border: 3px solid #2C02E7;text-align:center; overflow:auto;">                           
+                            <div style="color:#000000;position:relative;top:-20px;">
+                              <div style="font-size:17px;color:#000000;margin-top:32px;"> ${
+                                d.data.name
+                              } </div>
+                              <div style="font-size:11px;margin-right:10px;margin-left:10px;"> ${
                                 d.data.positionName || ''
                               } </div>
                               </div>
                             </div>
                             </div>
-                            <div style="position: absolute; width: 70px; height: 31px; left: 122px; top: 81px; background: url(${d.data.imageUrl});background-size: 70px; background-repeat: no-repeat;">
+                            <div style="position: absolute; ${logo_size}; ${logo_pos}; background: url(${d.data.imageUrl});background-size: contain; background-repeat: no-repeat;">
                             </div>
                           </div>
                           
-  `;
+                  `
+               };
           })
           .nodeUpdate(function (d, i, arr) {
             d3.select(this)
@@ -92,16 +145,13 @@
           })
           .render();
 
-        const back_img = './ecoutille2.png';
+        const url = `./ecoutille2.png`;
+        const replaced = url.replace(/(\r\n|\n|\r)/gm);
         d3.select('.svg-chart-container')
           .style(
-            'background',
-            'radial-gradient(circle at center, #000000 0, #2B00E7 100%) url("https://raw.githubusercontent.com/bumbeishvili/coronavirus.davidb.dev/master/glow.png")'
-          )
-          .style(
             'background-image',
-            `url(${back_img}), radial-gradient(circle at center, #000000 0, #2N00E7 100%)`
-          );
+            `radial-gradient(circle at center, #04192B 0, #000B0E 100%)`
+          )
       });
 
       function downloadPdf() {
@@ -126,7 +176,6 @@
         });
       }
     </script>
-    <script src="./pieChart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -154,7 +203,6 @@
       .btn {
         margin: 3px;
         color: inherit;
-        text-transform: uppercase;
         word-wrap: break-word;
         white-space: normal;
         cursor: pointer;
@@ -192,7 +240,6 @@
       }
 
       .btn-action-button {
-        text-transform: lowercase;
         font-size: 11px !important;
         border-radius: 7px !important;
         color: white !important;
@@ -202,7 +249,7 @@
 
       .action-buttons {
         position: absolute;
-        bottom: 10px;
+        bottom: 26vh;
         right: 35px;
       }
 
@@ -213,46 +260,16 @@
         right: 0;
         top: 0;
         bottom: 0;
-        background: radial-gradient(circle at center, #ffffff 0, #2B00E7 100%);
+        background: radial-gradient(circle at center, #04192b 0, #000b0e 100%);
       }
     </style>
 
     <div class="action-buttons">
       <button
-        onclick='chart.setExpanded("O-6164").render()'
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-chevron-down"></i> Expand
-      </button>
-      <br />
-
-      <button
-        onclick='chart.setExpanded("O-6164",false).render()'
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-chevron-up"></i> Collapse</button
-      ><br />
-
-      <button
-        onclick='chart.addNode({imageUrl:"https:\/\/raw.githubusercontent.com/bumbeishvili/Assets/master/Projects/D3/Organization%20Chart/cto.jpg",id:"root child",parentId:"O-6066",name:"test",progress:[25,20,15,10]})'
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-folder-plus"></i> Add Node
-      </button>
-      <br />
-
-      <button
-        onclick='chart.removeNode("O-6067")'
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-user-times"></i> remove</button
-      ><br />
-
-      <button
         onclick="chart.fit()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-sync"></i> fit
+        <i class="fas fa-sync"></i> Adapter à la fenêtre
       </button>
       <br />
 
@@ -260,7 +277,7 @@
         onclick='chart.layout(["right","bottom","left","top"][index++%4]).render().fit()'
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-retweet"></i> swap
+        <i class="fas fa-retweet"></i> Changer d'orientation
       </button>
       <br />
 
@@ -268,57 +285,29 @@
         onclick="chart.compact(!!(compact++%2)).render().fit()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-sitemap"></i> compact
+        <i class="fas fa-sitemap"></i> Format compact
       </button>
       <br />
 
       <button
-        onclick="chart.setActiveNodeCentered(!!(actNdCent++%2)).render()"
+        onclick='chart.setCentered("O-0").render()'
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-border-none"></i> center Active
-      </button>
-      <br />
-
-      <button
-        onclick='chart.setCentered("O-6162").render()'
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-compress-arrows-alt"></i> center
-      </button>
-      <br />
-      <button
-        onclick='chart.setHighlighted("O-6162").render()'
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-highlighter"></i> mark</button
-      ><br />
-      <button
-        onclick='chart.setUpToTheRootHighlighted("O-6162").render().fit()'
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-route"></i> mark root
-      </button>
-      <br />
-      <button
-        onclick="chart.clearHighlighting()"
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-eraser"></i> clear mark
+        <i class="fas fa-compress-arrows-alt"></i> Centrer
       </button>
       <br />
       <button
         onclick="chart.fullscreen('body')"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-expand"></i> fullscreen</button
+        <i class="fas fa-expand"></i> Plein écran</button
       ><br />
 
       <button
         onclick="chart.exportImg()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="far fa-images"></i> export img
+        <i class="far fa-images"></i> Exporter l'image actuelle
       </button>
       <br />
 
@@ -326,44 +315,45 @@
         onclick="chart.exportImg({full:true})"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="far fa-images"></i> export full img
+        <i class="far fa-images"></i> Exporter l'image complète
       </button>
       <br />
 
       <button
-        onclick="chart.exportSvg()"
-        class="btn btn-action-button waves-effect waves-light"
-      >
-        <i class="fas fa-file-download"></i> export svg
-      </button>
-      <br />
-      <button
         onclick="chart.expandAll()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-angle-double-down"></i> expand all</button
+        <i class="fas fa-angle-double-down"></i> Tout déplier</button
       ><br />
 
       <button
         onclick="chart.collapseAll()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-angle-double-up"></i> collapse all</button
+        <i class="fas fa-angle-double-up"></i> Tout replier</button
       ><br />
 
       <button
         onclick="downloadPdf()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="far fa-file-pdf"></i> export pdf
+        <i class="far fa-file-pdf"></i> Exporter en PDF
       </button>
       <br />
 
       <button
-        onclick='chart.connections([{from:"O-6069",to:"O-6070",label:"Conflicts of interest"}]).render()'
+        onclick='chart.connections([{from:"O-0",to:"O-1",label:"Conflicts of interest"}]).render()'
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-project-diagram"></i> add link
+        <i class="fas fa-project-diagram"></i> Montrer les connexions
+      </button>
+      <br />
+
+      <button
+        onclick='chart.connections([{}]).render()'
+        class="btn btn-action-button waves-effect waves-light"
+      >
+        <i class="fas fa-project-diagram"></i> Cacher les connexions
       </button>
       <br />
 
@@ -371,38 +361,15 @@
         onclick="chart.zoomOut()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-minus"></i> zoom out</button
+        <i class="fas fa-minus"></i> Dézoomer</button
       ><br />
       <button
         onclick="chart.zoomIn()"
         class="btn btn-action-button waves-effect waves-light"
       >
-        <i class="fas fa-plus"></i> zoom in
+        <i class="fas fa-plus"></i> Zoomer
       </button>
-      <br />
+      <br/>
     </div>
-
-    <a
-      target="_blank"
-      href="https://github.com/bumbeishvili/d3-organization-chart"
-    >
-      <img
-        style="position: fixed; top: 0; right: 0; border: 0; z-index: 2"
-        width="149"
-        height="149"
-        src="https://bumbeishvili.github.io/d3-tooltip/forkme.png"
-        alt="Fork me on GitHub"
-      />
-    </a>
-
-    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
-    <script>
-      kofiWidgetOverlay.draw('bumbeishvili', {
-        type: 'floating-chat',
-        'floating-chat.donateButton.text': 'Tip Us',
-        'floating-chat.donateButton.background-color': '#00b9fe',
-        'floating-chat.donateButton.text-color': '#fff',
-      });
-    </script>
   </body>
 </html>
