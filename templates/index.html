@@ -94,8 +94,10 @@
             if (d.data.tags.includes('divider')){
               return `
                           <div style="font-family: 'Montserrat'; sans-serif; position:absolute;${margins};width:${
-                            d.width
-                          }px;height:${d.height}px;border-radius:0px;border: 3px solid #ffffff;text-align:center; overflow:auto;">                           
+                            d.width-6
+                          }px;height:${
+                            d.height-6
+                            }px;border-radius:0px;border: 3px solid #ffffff;text-align:center;">                           
                             <div style="position:relative;">
                               <div style="font-size:17px;color:#ffffff;margin-top:17px;"> ${
                                 d.data.name
